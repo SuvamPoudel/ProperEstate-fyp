@@ -17,7 +17,7 @@
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.02;
+  opacity: 0.015;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -243,17 +243,42 @@ main.home-main {
   font-weight: 700;
 }
 
+/* ── Admin panel light-mode isolation ────────────────────────────── */
+.admin-panel-root {
+  background: #F2EFEA !important;
+  color: #272401 !important;
+  min-height: 100vh;
+  margin-top: -60px;
+  padding-top: 60px;
+}
+.admin-panel-root * {
+  box-sizing: border-box;
+}
+/* Override any dark-mode global styles leaking into admin */
+.admin-panel-root input,
+.admin-panel-root select,
+.admin-panel-root textarea {
+  background: #F2EFEA !important;
+  color: #272401 !important;
+  border-color: rgba(85,115,115,0.2) !important;
+}
+.admin-panel-root p,
+.admin-panel-root span,
+.admin-panel-root div {
+  color: inherit;
+}
+
 /* ===== ADMIN LAYOUT ===== */
 .admin-container {
   display: flex;
   min-height: calc(100vh - 60px);
-  background: var(--bg-primary);
+  background: #F2EFEA;
 }
 .admin-sidebar {
   width: 200px;
   flex-shrink: 0;
-  background: rgba(12,16,28,0.95);
-  border-right: 1px solid rgba(0,212,255,0.1);
+  background: #1C1F1A;
+  border-right: none;
   padding: 16px 10px;
   position: sticky;
   top: 60px;
@@ -261,53 +286,54 @@ main.home-main {
   overflow-y: auto;
 }
 .admin-sidebar h2 {
-  font-family: 'Rajdhani', var(--font-sans);
+  font-family: 'DM Sans', var(--font-sans);
   font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(0,212,255,0.45);
+  color: rgba(242,239,234,0.35);
   margin: 0 0 10px;
   padding-bottom: 8px;
-  border-bottom: 1px solid rgba(0,212,255,0.08);
+  border-bottom: 1px solid rgba(242,239,234,0.08);
 }
 .admin-sidebar > div {
   display: flex;
   align-items: center;
   padding: 7px 10px;
   margin-bottom: 2px;
-  font-family: 'Rajdhani', var(--font-sans);
+  font-family: 'DM Sans', var(--font-sans);
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: rgba(242,239,234,0.55);
   cursor: pointer;
   transition: all 180ms ease;
   border-left: 2px solid transparent;
 }
 .admin-sidebar > div:hover {
-  background: rgba(0,212,255,0.04);
-  color: var(--text-primary);
+  background: rgba(242,239,234,0.07);
+  color: rgba(242,239,234,0.9);
 }
 .admin-sidebar > div.active {
-  background: rgba(0,212,255,0.06);
-  color: rgba(0,212,255,0.85);
-  border-left-color: rgba(0,212,255,0.5);
+  background: rgba(85,115,115,0.3);
+  color: #F2EFEA;
+  border-left-color: #557373;
 }
 .admin-content {
   flex: 1;
   padding: 20px 24px;
   overflow-y: auto;
   min-width: 0;
+  background: #F2EFEA;
+  color: #272401;
 }
 .admin-content h1 {
-  font-family: 'Rajdhani', var(--font-sans);
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--text-primary);
+  font-family: 'DM Serif Display', var(--font-sans);
+  font-size: 1.8rem;
+  font-weight: 400;
+  font-style: italic;
+  color: #272401;
   margin: 0 0 16px;
 }
 
@@ -316,26 +342,25 @@ main.home-main {
   position: relative;
   z-index: 1;
   margin-top: 24px;
-  padding: 16px 24px;
-  background: rgba(12,16,28,0.9);
-  border-top: 1px solid rgba(0,212,255,0.08);
+  padding: 28px 40px;
+  background: linear-gradient(135deg, #557373 0%, #3d5555 50%, #272401 100%);
+  border-top: none;
   text-align: center;
 }
 .footer h2 {
-  font-family: 'Rajdhani', var(--font-sans);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  margin: 0 0 3px;
-  color: rgba(0,212,255,0.6);
+  font-family: 'DM Serif Display', 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.01em;
+  margin: 0 0 5px;
+  color: #F2EFEA;
 }
 .footer p {
-  font-family: 'Rajdhani', var(--font-sans);
-  font-size: 0.58rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--text-muted);
+  font-family: 'DM Sans', 'Inter', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: rgba(242,239,234,0.55);
   margin: 0;
 }
 

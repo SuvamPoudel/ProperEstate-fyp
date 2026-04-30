@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { API_URL } from "../constants";
 import "../BuildPropertyPage.css";
 
@@ -472,7 +472,7 @@ function RegisterBuilderTab({ user }) {
   });
   const [workers, setWorkers] = useState([{ name:"", role:"", experience:"" }]);
   const [proofFiles, setProofFiles] = useState([]);
-  const [portfolioFiles, setPortfolioFiles] = useState([]);
+  const [portfolioFiles, setPortfolioFiles] = useState([]); // eslint-disable-line no-unused-vars
   const [submitting, setSubmitting] = useState(false);
   const [myOffers, setMyOffers] = useState([]);
   const [openProjects, setOpenProjects] = useState([]);

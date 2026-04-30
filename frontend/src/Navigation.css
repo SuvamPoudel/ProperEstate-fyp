@@ -1,7 +1,5 @@
 /* ===================================================================
-   NAVIGATION — Always transparent, blends into hero video
-   No background, no border. Frosted glass only after scroll.
-   Dark mode only — light mode removed.
+   NAVIGATION — Fully transparent on hero, teal-olive glass on scroll
    =================================================================== */
 
 /* ---- Header shell ---- */
@@ -23,16 +21,17 @@
   gap: 16px;
   background: transparent;
   border-bottom: none;
-  transition: background 500ms ease, border-color 500ms ease, box-shadow 500ms ease;
+  box-shadow: none;
+  transition: background 400ms ease, border-color 400ms ease, box-shadow 400ms ease;
 }
 
-/* ── Scrolled: subtle frosted dark glass ─────────────────────────── */
+/* ── Scrolled: teal-olive frosted glass ──────────────────────────── */
 .header.scrolled .nav-bar {
-  background: rgba(8, 11, 20, 0.82);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03), 0 4px 24px rgba(0, 0, 0, 0.3);
+  background: rgba(39, 36, 1, 0.72);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border-bottom: 1px solid rgba(85, 115, 115, 0.25);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.04), 0 4px 24px rgba(0,0,0,0.3);
 }
 
 /* ================================================================
@@ -48,24 +47,23 @@
 .logo {
   display: flex;
   align-items: center;
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'DM Serif Display', 'Cormorant Garamond', Georgia, serif;
   font-size: 1.15rem;
-  font-weight: 700;
+  font-weight: 400;
   font-style: italic;
   letter-spacing: -0.01em;
   cursor: pointer;
   user-select: none;
   white-space: nowrap;
-  color: #F0EDE8;
+  color: #F2EFEA;
   transition: color 200ms ease;
   text-decoration: none;
 }
-.logo:hover { color: var(--accent); }
+.logo:hover { color: #DFE5F3; }
 
-/* Logo dot */
 .logo::after {
   content: '.';
-  color: var(--accent);
+  color: #DFE5F3;
   font-size: 1.5rem;
   line-height: 0;
   margin-left: -1px;
@@ -73,7 +71,7 @@
 }
 
 /* ================================================================
-   HAMBURGER — see Sidebar.css for morph animation
+   HAMBURGER
    ================================================================ */
 .menu-icon {
   display: flex;
@@ -83,13 +81,13 @@
   height: 36px;
   border-radius: 8px;
   cursor: pointer;
-  color: rgba(240, 237, 232, 0.85);
+  color: rgba(242, 239, 234, 0.85);
   transition: background 150ms ease, color 150ms ease;
   flex-shrink: 0;
 }
 .menu-icon:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: #F0EDE8;
+  background: rgba(255,255,255,0.1);
+  color: #F2EFEA;
 }
 
 /* ================================================================
@@ -103,12 +101,12 @@
 }
 
 /* ================================================================
-   THEME TOGGLE — hidden (dark only now)
+   THEME TOGGLE — hidden
    ================================================================ */
 .nav-theme-toggle { display: none !important; }
 
 /* ================================================================
-   NAV ICON BUTTONS
+   NAV ICON BUTTONS — transparent on hero, teal tint on scroll
    ================================================================ */
 .nav-chat-btn,
 .nav-requests-btn {
@@ -116,39 +114,58 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   background: transparent;
-  border: none;
-  border-radius: 8px;
+  border: 1px solid rgba(242, 239, 234, 0.25);
+  border-radius: 12px;
   cursor: pointer;
-  color: rgba(240, 237, 232, 0.75);
-  transition: background 150ms ease, color 150ms ease;
+  color: rgba(242, 239, 234, 0.85);
+  box-shadow: none;
+  transition: background 180ms ease, color 180ms ease, transform 180ms ease,
+              box-shadow 180ms ease, border-color 180ms ease;
   flex-shrink: 0;
 }
 .nav-chat-btn:hover,
 .nav-requests-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: #F0EDE8;
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(242, 239, 234, 0.55);
+  color: #F2EFEA;
+  transform: translateY(-1px);
+}
+
+/* Scrolled state */
+.header.scrolled .nav-chat-btn,
+.header.scrolled .nav-requests-btn {
+  background: rgba(85, 115, 115, 0.2);
+  border-color: rgba(85, 115, 115, 0.4);
+  color: #DFE5F3;
+}
+.header.scrolled .nav-chat-btn:hover,
+.header.scrolled .nav-requests-btn:hover {
+  background: rgba(85, 115, 115, 0.35);
+  border-color: rgba(85, 115, 115, 0.65);
+  color: #F2EFEA;
 }
 
 /* Badge */
 .nav-requests-badge {
   position: absolute;
-  top: -3px;
-  right: -3px;
-  min-width: 16px;
-  height: 16px;
+  top: -4px;
+  right: -4px;
+  min-width: 17px;
+  height: 17px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 3px;
-  background: #E53935;
+  background: linear-gradient(135deg, #f05070, #e8405a);
   color: #fff;
   font-size: 9px;
   font-weight: 700;
   border-radius: 999px;
-  border: 2px solid transparent;
+  border: 2px solid rgba(39, 36, 1, 0.9);
+  box-shadow: 0 4px 10px rgba(240, 80, 112, 0.4);
   animation: badgePop 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 @keyframes badgePop {
@@ -161,16 +178,16 @@
    ================================================================ */
 .nav-item {
   padding: 0.3rem 0.6rem;
-  font-family: 'Inter', sans-serif;
+  font-family: 'DM Sans', 'Inter', sans-serif;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  color: rgba(240, 237, 232, 0.7);
+  color: rgba(242, 239, 234, 0.75);
   transition: color 150ms ease;
   white-space: nowrap;
   border-radius: 6px;
 }
-.nav-item:hover { color: #F0EDE8; }
+.nav-item:hover { color: #F2EFEA; }
 
 /* ================================================================
    USER MENU & AVATAR
@@ -186,15 +203,15 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  border: 1.5px solid rgba(200, 169, 110, 0.35);
+  border: 1.5px solid rgba(242, 239, 234, 0.35);
   cursor: pointer;
   transition: border-color 150ms ease, box-shadow 150ms ease;
   object-fit: cover;
   flex-shrink: 0;
 }
 .nav-avatar:hover {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(200, 169, 110, 0.18);
+  border-color: #DFE5F3;
+  box-shadow: 0 0 0 3px rgba(223, 229, 243, 0.2);
 }
 
 /* ================================================================
@@ -205,13 +222,14 @@
   top: calc(100% + 8px);
   right: 0;
   min-width: 180px;
-  background: #0F1422;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(160deg, rgba(39, 36, 1, 0.97), rgba(61, 85, 85, 0.97));
+  border: 1px solid rgba(85, 115, 115, 0.3);
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
   padding: 4px;
   animation: dropdownSlide 200ms cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 100;
+  backdrop-filter: blur(16px);
 }
 @keyframes dropdownSlide {
   from { opacity: 0; transform: translateY(-6px); }
@@ -219,26 +237,40 @@
 }
 .dropdown-menu > div {
   padding: 0.55rem 0.85rem;
-  font-family: 'Inter', sans-serif;
+  font-family: 'DM Sans', 'Inter', sans-serif;
   font-size: 13px;
-  color: rgba(240, 237, 232, 0.75);
+  color: rgba(242, 239, 234, 0.8);
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 10px;
   transition: background 120ms ease, color 120ms ease;
 }
 .dropdown-menu > div:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--accent);
+  background: rgba(85, 115, 115, 0.25);
+  color: #F2EFEA;
 }
 
 /* ================================================================
    LOGIN BUTTON
    ================================================================ */
 .nav-right .btn-primary {
-  height: 32px;
-  padding: 0 1rem;
+  height: 34px;
+  padding: 0 1.1rem;
   font-size: 13px;
-  border-radius: 8px;
+  border-radius: 99px;
+  background: #557373;
+  color: #F2EFEA;
+  border: none;
+  font-family: 'DM Sans', 'Inter', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 3px 14px rgba(85, 115, 115, 0.4);
+}
+.nav-right .btn-primary:hover {
+  background: #3d5555;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(85, 115, 115, 0.5);
+  color: #F2EFEA;
 }
 
 /* ================================================================

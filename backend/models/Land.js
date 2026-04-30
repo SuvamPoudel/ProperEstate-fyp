@@ -16,6 +16,7 @@ const landSchema = new mongoose.Schema({
   mediaFiles: [{ type: String }],
   lalpurjaImage: { type: String, default: null },
   mapUrl: { type: String, default: "" },
+  myMapsUrl: { type: String, default: "" },
   ownerName: { type: String, default: "" },
   ownerPhone: { type: String, default: "" },
   ownerEmail: { type: String, default: "" },

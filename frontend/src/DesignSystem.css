@@ -6,28 +6,28 @@
 /* ===== FONT IMPORTS ===== */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700&display=swap');
 
-/* ===== CSS CUSTOM PROPERTIES — WARM OCEAN PALETTE ===== */
+/* ===== CSS CUSTOM PROPERTIES — TEAL OLIVE PALETTE ===== */
 :root,
 [data-theme="light"],
 [data-theme="dark"] {
-  /* Colors — Warm Ocean (Deep Navy & Sunset Coral) */
-  --bg-primary:    #0B1320; /* Deep oceanic navy */
-  --bg-secondary:  #132238; /* Slightly lighter ocean blue */
-  --bg-card:       #1A2A42; /* Elevated navy for cards */
-  --bg-dark:       #050910; /* Deepest ocean abyss */
-  
-  /* Warm sandy tones for text to contrast the cool ocean */
-  --text-primary:  #F4EFE6; /* Warm sand/off-white */
-  --text-secondary:#D5C6B1; /* Warm driftwood/muted sand */
-  --text-muted:    #8D9CB0; /* Muted sea-foam gray */
-  --text-on-dark:  #F4EFE6; 
-  
-  /* Accents using warm sunset/coral tones */
-  --accent:        #E27D60; /* Warm sunset coral */
-  --accent-hover:  #E8A87C; /* Soft peach/coral on hover */
-  --border:        #2A3B54; /* Navy border */
-  --border-strong: #E27D60; /* Coral border */
-  --overlay:       rgba(11, 19, 32, 0.8); /* Deep navy overlay */
+  /* Colors — Teal & Olive (matches RentalPartnerPage premium palette) */
+  --bg-primary:    #1a2020; /* Deep teal-olive dark */
+  --bg-secondary:  #222b2b; /* Slightly lighter teal-dark */
+  --bg-card:       #2a3535; /* Elevated teal for cards */
+  --bg-dark:       #0d1414; /* Deepest teal abyss */
+
+  /* Warm canvas tones for text */
+  --text-primary:  #F2EFEA; /* Warm canvas/off-white */
+  --text-secondary:#D5CFC6; /* Warm muted canvas */
+  --text-muted:    #8D9E9E; /* Muted teal-gray */
+  --text-on-dark:  #F2EFEA;
+
+  /* Accents — teal & mist */
+  --accent:        #557373; /* Rental partner teal */
+  --accent-hover:  #6b9090; /* Lighter teal on hover */
+  --border:        #2e3d3d; /* Teal border */
+  --border-strong: #557373; /* Teal border strong */
+  --overlay:       rgba(13, 20, 20, 0.8);
 
   /* Legacy aliases */
   --color-bg-light:    var(--bg-primary);
@@ -40,8 +40,6 @@
   --color-text-muted:  var(--text-muted);
   --color-accent:      var(--accent);
   --color-accent-hover:var(--accent-hover);
-
-  /* Legacy aliases — keep for backward compat */
   --color-overlay:     var(--overlay);
 
   /* Typography */

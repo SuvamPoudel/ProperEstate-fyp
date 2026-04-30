@@ -21,6 +21,8 @@ import "./BuyersForumPage.css";
 import "./LandForm.css";
 import "./HelpCenter.css";
 import "./DashboardPages.css";
+import "./BuildPropertyPage.css";
+import "./BiddingPage.css";
 import initAnimations from "./animations";
 
 // Core components
@@ -45,6 +47,9 @@ import BuyersSectionPage from "./pages/BuyersSectionPage";
 import BuyersForumPage from "./pages/BuyersForumPage";
 import RentalPartnerPage from "./pages/RentalPartnerPage";
 import { ListedAssetsPage, SavedWishlistPage, RentalRequestsPage } from "./pages/DashboardPages";
+import BuildPropertyPage from "./pages/BuildPropertyPage";
+import ChatDMPage from "./pages/ChatDMPage";
+import BiddingPage from "./pages/BiddingPage";
 
 // Auth pages (kept in pages folder)
 import LoginPage from "./pages/Login";
@@ -212,7 +217,9 @@ function App() {
 
       {showAddPayment && (<EsewaPayment amount={500} description={"ProperEstate Platform Commission (Listing Fee)"} onSuccess={completeAddLand} onCancel={() => setShowAddPayment(false)} />)}
       {toast && <Toast msg={toast.msg} type={toast.type} onClose={() => setToast(null)} />}
-      {user && <ChatApp user={user} initialOther={chatTarget} openRef={chatRef} onUnreadChange={setChatUnread} />}
+      {user && location.pathname !== "/messages" && (
+        <ChatApp user={user} initialOther={chatTarget} openRef={chatRef} onUnreadChange={setChatUnread} />
+      )}
       {user && showNotifPanel && (
         <NotificationsPanel
           user={user}
@@ -314,6 +321,22 @@ function App() {
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
               </span>
               <span className="sidebar-link-label">Buyers Forum</span>
+              <span className="sidebar-link-arrow">›</span>
+            </div>
+
+            <div className="sidebar-link" onClick={() => { navigate("/build-property"); setSidebarOpen(false); }}>
+              <span className="sidebar-link-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+              </span>
+              <span className="sidebar-link-label">Build Property</span>
+              <span className="sidebar-link-arrow">›</span>
+            </div>
+
+            <div className="sidebar-link" onClick={() => { navigate("/bidding"); setSidebarOpen(false); }}>
+              <span className="sidebar-link-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </span>
+              <span className="sidebar-link-label">Bidding</span>
               <span className="sidebar-link-arrow">›</span>
             </div>
 
@@ -463,7 +486,7 @@ function App() {
             </>
           } />
 
-          <Route path="/land/:id" element={<LandDetailsPage user={user} toggleSave={toggleSave} onChatWith={(owner) => { setChatTarget(owner); }} />} />
+          <Route path="/land/:id" element={<LandDetailsPage user={user} toggleSave={toggleSave} onChatWith={(owner) => { setChatTarget(owner); chatRef.current?.openWith(owner); }} />} />
           <Route path="/edit-land/:id" element={<EditLandPage user={user} />} />
           <Route path="/login" element={<LoginPage setUser={setUser} />} />
           <Route path="/signup" element={<SignupPage setUser={setUser} />} />
@@ -473,18 +496,21 @@ function App() {
           <Route path="/proper-agent" element={<ProperAgentPage user={user} />} />
           <Route path="/buyers-section" element={<BuyersSectionPage user={user} chatRef={chatRef} />} />
           <Route path="/buyers-forum" element={<BuyersForumPage user={user} chatRef={chatRef} />} />
+          <Route path="/messages" element={user ? <ChatDMPage user={user} chatRef={chatRef} /> : <Navigate to="/login" />} />
+          <Route path="/build-property" element={user ? <BuildPropertyPage user={user} chatRef={chatRef} /> : <Navigate to="/login" />} />
+          <Route path="/bidding" element={<BiddingPage user={user} />} />
           <Route path="/dashboard/listed" element={<ListedAssetsPage user={user} toggleSave={toggleSave} fetchDashboardData={fetchDashboardData} />} />
           <Route path="/dashboard/saved" element={<SavedWishlistPage user={user} toggleSave={toggleSave} />} />
           <Route path="/dashboard/requests" element={<RentalRequestsPage dashData={dashData} respondToBooking={respondToBooking} />} />
-          <Route path="/admin" element={user?.role === "admin" ? <AdminDashboard /> : <Navigate to="/" />} />
+          <Route path="/admin" element={user?.role === "admin" ? <AdminDashboard user={user} chatRef={chatRef} /> : <Navigate to="/" />} />
           <Route path="/add-land" element={
             !user ? <Navigate to="/login" /> :
-            <LandForm onSubmit={initiateAddLand} submitLabel="Submit & Pay Rs.1,000 Commission" />
+            <LandForm onSubmit={initiateAddLand} submitLabel="Submit & Pay Rs. 500 Commission" />
           } />
         </Routes>
       </main>
 
-      <SmartSuggestor />
+      <SmartSuggestor user={user} />
 
       <footer className="footer">
         <h2>PROPERESTATE</h2>

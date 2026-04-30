@@ -5,10 +5,29 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
+const http = require("http");
+const { Server } = require("socket.io");
 const path = require("path");
 
 const connectDB = require("./config/database");
 const app = express();
+const server = http.createServer(app);
+
+// Socket.io for live bidding
+const io = new Server(server, {
+  cors: { origin: "*", methods: ["GET", "POST"] },
+});
+app.set("io", io);
+
+io.on("connection", (socket) => {
+  // Join a bid listing room
+  socket.on("join_bid", (listingId) => {
+    socket.join(`bid_${listingId}`);
+  });
+  socket.on("leave_bid", (listingId) => {
+    socket.leave(`bid_${listingId}`);
+  });
+});
 
 // Middleware
 app.use(cors());
@@ -29,8 +48,9 @@ app.use("/", require("./routes/aiRoutes"));
 app.use("/", require("./routes/helpRoutes"));
 app.use("/", require("./routes/seedRoutes"));
 app.use("/", require("./routes/buildRoutes"));
+app.use("/", require("./routes/biddingRoutes"));
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });

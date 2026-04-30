@@ -72,15 +72,51 @@ const LandDetailsPage = ({ user, toggleSave, onChatWith }) => {
             </div>
             {land.mapUrl && (
               <div className="details-map-section">
-                <span className="details-section-label">Location</span>
+                <span className="details-section-label">Location on Map</span>
                 <iframe
                   title="Property Location Map"
-                  width="100%" height="300"
-                  style={{ border: 0 }}
+                  width="100%"
+                  height="300"
+                  style={{ border: 0, borderRadius: 10, display: "block" }}
                   loading="lazy"
                   allowFullScreen
-                  src={"https://maps.google.com/maps?q=" + encodeURIComponent(land.mapUrl) + "&output=embed"}
+                  referrerPolicy="no-referrer-when-downgrade"
+                  src={(() => {
+                    const url = land.mapUrl.trim();
+                    if (url.includes("google.com/maps/d/")) {
+                      return url.replace("/edit","").replace("/viewer","").replace("/u/0/viewer","").replace("/u/1/viewer","") + (url.includes("?") ? "&" : "?") + "output=embed";
+                    }
+                    if (url.includes("output=embed")) return url;
+                    if (url.startsWith("http")) return url + (url.includes("?") ? "&output=embed" : "?output=embed");
+                    return `https://maps.google.com/maps?q=${encodeURIComponent(url)}&output=embed&z=15`;
+                  })()}
                 />
+              </div>
+            )}
+            {land.myMapsUrl && (land.mainCategory === "Land" || land.mainCategory === "House" || land.category === "Land" || land.category === "House") && (
+              <div className="details-map-section">
+                <span className="details-section-label">Property Boundary (MyMaps)</span>
+                <iframe
+                  title="Property Boundary MyMaps"
+                  width="100%"
+                  height="320"
+                  style={{ border: 0, borderRadius: 10, display: "block" }}
+                  loading="lazy"
+                  allowFullScreen
+                  referrerPolicy="no-referrer-when-downgrade"
+                  src={(() => {
+                    const url = land.myMapsUrl.trim();
+                    if (url.includes("google.com/maps/d/")) {
+                      const base = url.split("?")[0].replace("/edit","").replace("/viewer","").replace("/u/0/viewer","").replace("/u/1/viewer","");
+                      const mid = url.match(/mid=([^&]+)/)?.[1];
+                      return `${base}/embed${mid ? "?mid=" + mid : ""}`;
+                    }
+                    return url;
+                  })()}
+                />
+                <p style={{fontSize:"0.7rem",color:"#a0aeae",marginTop:6,lineHeight:1.5}}>
+                  📍 Custom property boundary map — created by the owner on Google MyMaps
+                </p>
               </div>
             )}
           </div>

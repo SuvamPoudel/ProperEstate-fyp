@@ -18,7 +18,7 @@ const LandForm = ({ initialData = {}, onSubmit, submitLabel = "Submit Listing" }
   return (
     <div className="list-property-page">
 
-      {/* ── Header ── */}
+      {/* ── Hero header ── */}
       <div className="list-property-header">
         <div className="list-property-eyebrow">List a Property</div>
         <h1 className="list-property-title">Publish your space,<br />reach real buyers.</h1>
@@ -26,6 +26,9 @@ const LandForm = ({ initialData = {}, onSubmit, submitLabel = "Submit Listing" }
           All listings are reviewed by our admin team before going live. Fill in accurate details to speed up verification.
         </p>
       </div>
+
+      {/* ── Body wrapper ── */}
+      <div className="lf-body">
 
       {/* ── Commission notice ── */}
       <div className="commission-notice">
@@ -235,6 +238,17 @@ const LandForm = ({ initialData = {}, onSubmit, submitLabel = "Submit Listing" }
                 <p className="map-hint">Paste a Google Maps link, city name, or Lat/Lng coordinates (e.g. 27.7172, 85.3240)</p>
                 <input name="mapUrl" placeholder="e.g. https://maps.google.com/... or 27.7172, 85.3240" defaultValue={initialData.mapUrl || ""} />
               </div>
+              {(mainCategory === "Land" || mainCategory === "House") && (
+                <div className="form-full">
+                  <label className="field-label">Google MyMaps Link <span style={{fontWeight:400,color:"#a0aeae",fontSize:"0.8rem"}}>(recommended for Land &amp; House)</span></label>
+                  <p className="map-hint">
+                    For precise property boundaries, create a custom map at{" "}
+                    <a href="https://mymaps.google.com" target="_blank" rel="noopener noreferrer" style={{color:"#557373",fontWeight:600}}>mymaps.google.com</a>
+                    {" "}→ draw your plot → Share → copy the link and paste it here.
+                  </p>
+                  <input name="myMapsUrl" placeholder="e.g. https://www.google.com/maps/d/viewer?mid=..." defaultValue={initialData.myMapsUrl || ""} />
+                </div>
+              )}
             </div>
           </div>
 
@@ -287,7 +301,7 @@ const LandForm = ({ initialData = {}, onSubmit, submitLabel = "Submit Listing" }
           <div className="form-submit-section">
             <div className="form-submit-info">
               By submitting, you agree to our platform terms.<br />
-              <strong>Rs. 1,000</strong> listing fee via eSewa will be charged.
+              <strong>Rs. 500</strong> listing fee via eSewa will be charged.
             </div>
             <button
               className="form-submit-btn"
@@ -303,6 +317,8 @@ const LandForm = ({ initialData = {}, onSubmit, submitLabel = "Submit Listing" }
 
         </form>
       </div>
+
+      </div>{/* end lf-body */}
     </div>
   );
 };

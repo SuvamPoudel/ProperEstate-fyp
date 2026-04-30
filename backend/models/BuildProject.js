@@ -28,28 +28,28 @@ const buildProjectSchema = new mongoose.Schema({
     required: true
   },
   landLocation: { type: String, default: "" },
-  landArea: { type: String, default: "" },  // e.g. "5 ropani", "200 sq ft"
-  province: { type: String, default: "" },
-  district: { type: String, default: "" },
-  city: { type: String, default: "" },
+  landArea:     { type: String, default: "" },
+  province:     { type: String, default: "" },
+  district:     { type: String, default: "" },
+  city:         { type: String, default: "" },
 
   // Budget
-  budgetMin: { type: Number, default: 0 },
-  budgetMax: { type: Number, default: 0 },
+  budgetMin:      { type: Number, default: 0 },
+  budgetMax:      { type: Number, default: 0 },
   budgetCurrency: { type: String, default: "NPR" },
   budgetFlexible: { type: Boolean, default: false },
 
   // Timeline
   expectedStartDate: { type: Date, default: null },
-  expectedDuration: { type: String, default: "" },  // e.g. "6 months", "1 year"
+  expectedDuration:  { type: String, default: "" },
 
   // Project details
-  description: { type: String, default: "" },
-  floors: { type: Number, default: 1 },
-  rooms: { type: Number, default: 0 },
-  specialRequirements: { type: String, default: "" },
+  description:        { type: String, default: "" },
+  floors:             { type: Number, default: 1 },
+  rooms:              { type: Number, default: 0 },
+  specialRequirements:{ type: String, default: "" },
   preferredMaterials: { type: String, default: "" },
-  referenceImages: [{ type: String }],  // uploaded filenames
+  referenceImages:    [{ type: String }],
 
   // Status
   status: {
@@ -64,11 +64,6 @@ const buildProjectSchema = new mongoose.Schema({
 
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
-});
-
-buildProjectSchema.pre("save", function (next) {
-  this.updatedAt = new Date();
-  next();
 });
 
 module.exports = mongoose.model("BuildProject", buildProjectSchema);
