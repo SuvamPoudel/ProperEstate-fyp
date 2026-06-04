@@ -17,10 +17,10 @@ const createBidListing = async (req, res) => {
       ...req.body,
       image,
       mediaFiles,
-      sellerName:  seller.name,
+      sellerName: seller.name,
       sellerPhone: seller.phone || "",
       sellerEmail: seller.email || "",
-      currentBid:  parseInt(req.body.startingPrice) || 0,
+      currentBid: parseInt(req.body.startingPrice) || 0,
       listingFeePaid: true,
       status: "pending", // admin must approve
     });
@@ -38,11 +38,11 @@ const getBidListings = async (req, res) => {
     const { category, province, district, status, search, sort } = req.query;
     const query = { status: { $in: ["active", "ended", "sold"] } };
 
-    if (status && ["active","ended","sold","pending"].includes(status)) {
+    if (status && ["active", "ended", "sold", "pending"].includes(status)) {
       query.status = status;
-    }    if (category)  query.mainCategory = new RegExp(category, "i");
-    if (province)  query.province = new RegExp(province, "i");
-    if (district)  query.district = new RegExp(district, "i");
+    } if (category) query.mainCategory = new RegExp(category, "i");
+    if (province) query.province = new RegExp(province, "i");
+    if (district) query.district = new RegExp(district, "i");
     if (search) {
       query.$or = [
         { title: new RegExp(search, "i") },
@@ -55,10 +55,10 @@ const getBidListings = async (req, res) => {
     const sortObj = sort === "ending_soon"
       ? { auctionEnd: 1 }
       : sort === "highest_bid"
-      ? { currentBid: -1 }
-      : sort === "lowest_start"
-      ? { startingPrice: 1 }
-      : { createdAt: -1 };
+        ? { currentBid: -1 }
+        : sort === "lowest_start"
+          ? { startingPrice: 1 }
+          : { createdAt: -1 };
 
     const listings = await BidListing.find(query).sort(sortObj).limit(50);
     res.json({ success: true, listings });

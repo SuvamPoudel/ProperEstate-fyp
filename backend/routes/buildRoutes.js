@@ -32,6 +32,7 @@ router.post("/build/progress/:updateId/reply/:commentId", c.replyToComment);
 // ── Admin ─────────────────────────────────────────────────────────────────────
 router.get("/build/admin/builders", c.adminGetBuilders);
 router.post("/build/admin/builders/:id/verify", c.adminVerifyBuilder);
+router.delete("/build/admin/builders/:id", c.deleteBuilderProfile);
 router.get("/build/admin/projects", c.adminGetProjects);
 
 module.exports = router;

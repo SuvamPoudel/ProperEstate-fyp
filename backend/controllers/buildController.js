@@ -487,10 +487,23 @@ const adminGetProjects = async (req, res) => {
   }
 };
 
+// DELETE /build/admin/builders/:id — admin deletes builder profile
+const deleteBuilderProfile = async (req, res) => {
+  try {
+    const profile = await BuilderProfile.findById(req.params.id);
+    if (!profile) return res.status(404).json({ success: false, message: "Builder not found" });
+    await BuilderProfile.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: "Builder profile deleted successfully" });
+  } catch (err) {
+    console.error("deleteBuilderProfile error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 module.exports = {
   createProject, getProjects, getProject, updateProject, deleteProject,
   createBuilderProfile, getMyBuilderProfile, getBuilders, updateBuilderProfile,
   createOffer, getOffersForProject, getOffersByBuilder, negotiate, respondToOffer,
   createProgressUpdate, getProgressUpdates, addComment, replyToComment,
-  adminGetBuilders, adminVerifyBuilder, adminGetProjects
+  adminGetBuilders, adminVerifyBuilder, adminGetProjects, deleteBuilderProfile
 };

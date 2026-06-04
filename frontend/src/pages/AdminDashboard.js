@@ -226,7 +226,7 @@ const BidAdminCard = ({ b, onApprove, onReject }) => {
 };
 
 /* ── Builder Admin Card ────────────────────────────────────────── */
-const BuilderAdminCard = ({ b, onApprove, onReject }) => {
+const BuilderAdminCard = ({ b, onApprove, onReject, onDelete, onMessage }) => {
   const vs = b.verificationStatus;
   const vsColor = vs==="approved"?P.success:vs==="rejected"?P.danger:P.warn;
   return (
@@ -267,13 +267,15 @@ const BuilderAdminCard = ({ b, onApprove, onReject }) => {
         {vs!=="approved" && <Btn sm onClick={()=>onApprove(b._id,"approved")}>✓ Approve</Btn>}
         {vs!=="rejected" && <Btn sm danger onClick={()=>onReject(b._id,"rejected")}>✕ Reject</Btn>}
         {vs==="approved" && <Btn sm warn onClick={()=>onReject(b._id,"rejected")}>Revoke</Btn>}
+        {onMessage && b.userId && <Btn sm ghost onClick={()=>onMessage({ _id: b.userId._id || b.userId, name: b.companyName })}>💬 Message</Btn>}
+        {onDelete && <Btn sm danger onClick={()=>onDelete(b._id)}>🗑 Delete Profile</Btn>}
       </div>
     </div>
   );
 };
 
 /* ── Project Admin Card ────────────────────────────────────────── */
-const ProjectAdminCard = ({ p }) => {
+const ProjectAdminCard = ({ p, onDelete, onMessage }) => {
   const sc = { open:P.success, negotiating:P.warn, deal_done:P.teal, in_progress:"#7c3aed", completed:P.teal, cancelled:P.danger };
   return (
     <div style={{ background:P.surface, borderRadius:18, padding:"18px 20px",
@@ -283,10 +285,17 @@ const ProjectAdminCard = ({ p }) => {
         <Badge c={sc[p.status]||P.muted}>{p.status}</Badge>
       </div>
       <InfoRow label="Type" value={`${p.buildType||"—"} · ${p.purpose||"—"}`} />
-      <InfoRow label="Owner" value={p.ownerId?.name} />
-      <InfoRow label="Email" value={p.ownerId?.email} />
+      <InfoRow label="Owner" value={p.ownerId?.name || p.ownerName} />
+      <InfoRow label="Email" value={p.ownerId?.email || p.ownerEmail} />
       <InfoRow label="Budget" value={`Rs. ${Number(p.budgetMin||0).toLocaleString()} – ${Number(p.budgetMax||0).toLocaleString()}`} />
-      <InfoRow label="Location" value={[p.city,p.district,p.province].filter(Boolean).join(", ")||"Nepal"} />
+      <InfoRow label="Location" value={[p.city,p.district,p.province].filter(Boolean).join(", ")||p.landLocation||"Nepal"} />
+      <InfoRow label="Duration" value={p.expectedDuration} />
+      {p.description && <p style={{ margin:"8px 0 0", fontSize:"0.78rem", color:P.muted, lineHeight:1.6 }}>{p.description.slice(0,140)}{p.description.length>140?"…":""}</p>}
+      <Divider />
+      <div style={{ display:"flex", gap:7, flexWrap:"wrap" }}>
+        {onMessage && p.ownerId && <Btn sm ghost onClick={()=>onMessage({ _id: p.ownerId._id || p.ownerId, name: p.ownerId.name || p.ownerName })}>💬 Message Owner</Btn>}
+        {onDelete && <Btn sm danger onClick={()=>onDelete(p._id)}>🗑 Delete Project</Btn>}
+      </div>
     </div>
   );
 };
@@ -379,6 +388,8 @@ const AdminDashboard = ({ user, chatRef }) => {
   const deleteRentalPartner = (id) => confirm_("Delete this rental partner post?", ()=>del(`${API_URL}/admin/rental-partner/${id}`));
   const deleteBuyerPost     = (id) => confirm_("Delete this buyer post?",          ()=>del(`${API_URL}/admin/buyer-post/${id}`));
   const deleteForumPost     = (id) => confirm_("Delete this forum post?",          ()=>del(`${API_URL}/admin/buyer-post/${id}`));
+  const deleteBuilder       = (id) => confirm_("Permanently delete this builder profile?", ()=>del(`${API_URL}/build/admin/builders/${id}`));
+  const deleteBuildProject  = (id) => confirm_("Permanently delete this build project?", ()=>del(`${API_URL}/build/projects/${id}`));
 
   // Message any user directly from admin panel
   const msgUser = (targetUser) => {
@@ -513,7 +524,7 @@ const AdminDashboard = ({ user, chatRef }) => {
           builders.length===0
             ? <Empty icon="🏗️" text="No builder applications yet" />
             : <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(320px,1fr))", gap:16 }}>
-                {builders.map(b=><BuilderAdminCard key={b._id} b={b} onApprove={approveBuilder} onReject={rejectBuilder} />)}
+                {builders.map(b=><BuilderAdminCard key={b._id} b={b} onApprove={approveBuilder} onReject={rejectBuilder} onDelete={deleteBuilder} onMessage={msgUser} />)}
               </div>
         )}
 
@@ -522,7 +533,7 @@ const AdminDashboard = ({ user, chatRef }) => {
           buildProjects.length===0
             ? <Empty icon="📋" text="No build projects posted yet" />
             : <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))", gap:16 }}>
-                {buildProjects.map(p=><ProjectAdminCard key={p._id} p={p} />)}
+                {buildProjects.map(p=><ProjectAdminCard key={p._id} p={p} onDelete={deleteBuildProject} onMessage={msgUser} />)}
               </div>
         )}
 

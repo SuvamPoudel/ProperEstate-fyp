@@ -257,7 +257,7 @@ const BuyersSectionPage = ({ user, chatRef }) => {
     <div className="bs-page">
       {showPayment && (
         <EsewaPayment
-          amount={200}
+          amount={500}
           description="Buyers Section Post Fee - ProperEstate"
           onSuccess={handlePaymentSuccess}
           onCancel={() => setShowPayment(false)}
@@ -338,10 +338,10 @@ const BuyersSectionPage = ({ user, chatRef }) => {
                 </div>
               </div>
               <button type="submit" className="btn-primary full-width" style={{marginTop:16}}>
-                📢 Post Request — Pay Rs. 200
+                📢 Post Request — Pay Rs. 500
               </button>
               <p style={{ marginTop: 10, fontSize: "0.85rem", color: "#6b7a7a" }}>
-                A posting commission of <strong>Rs. 200</strong> will be charged via eSewa.
+                A posting commission of <strong>Rs. 500</strong> will be charged via eSewa.
               </p>
             </form>
           </div>

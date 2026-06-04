@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { API_URL } from "../constants";
+import EsewaPayment from "../components/EsewaPayment";
 import "../BuildPropertyPage.css";
 
 const NEPAL_PROVINCES = ["Koshi","Madhesh","Bagmati","Gandaki","Lumbini","Karnali","Sudurpashchim"];
@@ -460,9 +462,25 @@ function ProjectDetailView({
 }
 
 // ── Tab: Register as Builder ──────────────────────────────────────────────────
-function RegisterBuilderTab({ user }) {
+function RegisterBuilderTab({ user, chatRef }) {
+  const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const handleMessageOwner = (proj) => {
+    if (!user) { navigate("/login"); return; }
+    if (!proj.ownerId) return alert("This owner cannot be messaged directly.");
+    const targetUser = {
+      _id: proj.ownerId,
+      name: proj.ownerName || "Client",
+      avatar: null
+    };
+    if (chatRef?.current?.openWith) {
+      chatRef.current.openWith(targetUser);
+    } else {
+      navigate("/messages", { state: { chatTarget: targetUser } });
+    }
+  };
   const [form, setForm] = useState({
     companyName:"", companyType:"company", registrationNumber:"",
     establishedYear:"", address:"", province:"", district:"", city:"",
@@ -482,6 +500,7 @@ function RegisterBuilderTab({ user }) {
   const [progressForm, setProgressForm] = useState({ title:"", description:"", percentComplete:"", milestone:"" });
   const [progressImages, setProgressImages] = useState([]);
   const [activeBuilderTab, setActiveBuilderTab] = useState("dashboard");
+  const [showPayment, setShowPayment] = useState(false);
 
   const fetchProfile = async () => {
     if (!user?._id) return;
@@ -528,9 +547,14 @@ function RegisterBuilderTab({ user }) {
   const setWorker = (i,k,v) => setWorkers(w => w.map((x,j) => j===i ? {...x,[k]:v} : x));
   const removeWorker = (i) => setWorkers(w => w.filter((_,j)=>j!==i));
 
-  const handleRegister = async (e) => {
+  const handleRegisterSubmit = (e) => {
     e.preventDefault();
     if (!user) return alert("Please login first");
+    setShowPayment(true);
+  };
+
+  const handlePaymentSuccess = async () => {
+    setShowPayment(false);
     setSubmitting(true);
     const fd = new FormData();
     Object.entries(form).forEach(([k,v]) => {
@@ -638,7 +662,7 @@ function RegisterBuilderTab({ user }) {
               {o.status === "accepted" && (
                 <div className="bp-offer-accepted-banner">
                   ✅ Deal accepted · Rs. {fmt(o.agreedBudget)} · {o.agreedDuration}
-                  <button className="bp-btn-primary" style={{marginLeft:12,padding:"4px 12px",fontSize:"0.8rem"}}
+                  <button className="bp-btn-primary bp-progress-update-btn"
                     onClick={() => setProgressModal(o)}>Post Progress Update</button>
                 </div>
               )}
@@ -685,9 +709,17 @@ function RegisterBuilderTab({ user }) {
                 {p.expectedDuration && <span>⏱ {p.expectedDuration}</span>}
                 {p.budgetFlexible && <span>💬 Flexible budget</span>}
               </div>
-              <button className="bp-btn-primary" onClick={() => { setOfferModal(p); setOfferForm({ proposedBudget:"", estimatedDuration:"", coverLetter:"" }); }}>
-                Submit Offer
-              </button>
+              <div className="bp-project-actions">
+                <button className="bp-btn-primary" onClick={() => { setOfferModal(p); setOfferForm({ proposedBudget:"", estimatedDuration:"", coverLetter:"" }); }}>
+                  Submit Offer
+                </button>
+                {p.ownerId && p.ownerId !== user?._id && (
+                  <button className="bp-btn-secondary" onClick={() => handleMessageOwner(p)}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Message Client
+                  </button>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -759,11 +791,19 @@ function RegisterBuilderTab({ user }) {
   // ── Registration form ─────────────────────────────────────────────────────
   return (
     <div className="bp-tab-content">
+      {showPayment && (
+        <EsewaPayment
+          amount={500}
+          description="Builder Company Registration Fee"
+          onSuccess={handlePaymentSuccess}
+          onCancel={() => setShowPayment(false)}
+        />
+      )}
       <div className="bp-register-intro">
         <h3 className="bp-section-title">Register Your Construction Company / Team</h3>
         <p>Submit your company details and legitimacy proof. Our admin team will review and verify your profile before you can start submitting offers to clients.</p>
       </div>
-      <form className="bp-form" onSubmit={handleRegister}>
+      <form className="bp-form" onSubmit={handleRegisterSubmit}>
         <div className="bp-form-grid">
           <div className="bp-field">
             <label>Company / Team Name *</label>
@@ -882,8 +922,11 @@ function RegisterBuilderTab({ user }) {
         </div>
 
         <button type="submit" className="bp-btn-primary bp-submit-btn" disabled={submitting}>
-          {submitting ? "Submitting…" : "Submit for Admin Review"}
+          {submitting ? "Submitting…" : "Pay Rs. 500 & Submit"}
         </button>
+        <p className="bp-fee-note">
+          💳 A one-time platform registration fee of <strong>Rs. 500</strong> will be charged via eSewa.
+        </p>
       </form>
     </div>
   );
@@ -896,28 +939,32 @@ export default function BuildPropertyPage({ user, chatRef }) {
   return (
     <div className="bp-page">
       <div className="bp-hero">
-        <div className="bp-hero-content">
-          <div className="bp-hero-eyebrow">Build Property</div>
-          <h1 className="bp-hero-title">Turn Your Vision<br /><span>Into Reality</span></h1>
-          <p className="bp-hero-sub">Post your construction project and connect directly with verified builders — no middlemen, transparent negotiations.</p>
-        </div>
-        <div className="bp-hero-stats">
-          <div className="bp-hero-stat"><span>🏗️</span><strong>Direct</strong><small>Builder to Client</small></div>
-          <div className="bp-hero-stat"><span>🔒</span><strong>Verified</strong><small>Admin-approved builders</small></div>
-          <div className="bp-hero-stat"><span>💬</span><strong>Negotiate</strong><small>Budget & timeline</small></div>
-          <div className="bp-hero-stat"><span>📊</span><strong>Track</strong><small>Live progress updates</small></div>
+        <div className="bp-hero-inner">
+          <div className="bp-hero-content">
+            <div className="bp-hero-eyebrow">Build Property</div>
+            <h1 className="bp-hero-title">Turn Your Vision<br /><span>Into Reality</span></h1>
+            <p className="bp-hero-sub">Post your construction project and connect directly with verified builders — no middlemen, transparent negotiations.</p>
+          </div>
+          <div className="bp-hero-stats">
+            <div className="bp-hero-stat"><span>🏗️</span><strong>Direct</strong><small>Builder to Client</small></div>
+            <div className="bp-hero-stat"><span>🔒</span><strong>Verified</strong><small>Admin-approved builders</small></div>
+            <div className="bp-hero-stat"><span>💬</span><strong>Negotiate</strong><small>Budget & timeline</small></div>
+            <div className="bp-hero-stat"><span>📊</span><strong>Track</strong><small>Live progress updates</small></div>
+          </div>
         </div>
       </div>
 
       <div className="bp-tabs-bar">
-        <button className={`bp-tab-btn ${tab==="project"?"active":""}`} onClick={()=>setTab("project")}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-          I Want to Build
-        </button>
-        <button className={`bp-tab-btn ${tab==="builder"?"active":""}`} onClick={()=>setTab("builder")}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-          I'm a Builder / Company
-        </button>
+        <div className="bp-tabs-bar-inner">
+          <button className={`bp-tab-btn ${tab==="project"?"active":""}`} onClick={()=>setTab("project")}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            I Want to Build
+          </button>
+          <button className={`bp-tab-btn ${tab==="builder"?"active":""}`} onClick={()=>setTab("builder")}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+            I'm a Builder / Company
+          </button>
+        </div>
       </div>
 
       <div className="bp-content">
